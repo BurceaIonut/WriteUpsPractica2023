@@ -1,0 +1,8 @@
+In acest ctf am abordat aceeasi tactica si am incercat injectii sql in pagina de search a site-ului de tipul UNION SELECT. Am renuntat la un moment dat la atacul asta si m-am concentrat pe analizarea request-urilor facute catre site.
+Am folosit BurpSuite si am constatat ca daca incerc sa trimit prin payload-ul "login" atacuri de tipul celor care sunt recomandate in documentatia suport din descrierea challange-ului primesc un raspuns de tipul ATTACK DETECTED.
+Am folosit fiecare payload din acea documentatie, dar degeaba. Am inceput sa caut pe Internet despre Routed SQL Injections si am gasit diferite payload-uri asemanatoare cu cele din documentatie. Am reusit intr-un final cu un payload ce se poate gasi pe acest site: https://book.hacktricks.xyz/pentesting-web/sql-injection
+Am trimis apoi un request cu payload-ul:
+login=-1' union select 0x2d312720756e696f6e2073656c656374206c6f67696e2c70617373776f72642066726f6d2075736572732d2d2061 -- a
+Ca raspuns am primit in campul Email flag-ul in clar.
+Am atasat si cateva poze mai jos care evidentiaza rezultatele incercarilor si rezultatul final.
+Am inteles din ce am citit ca in general atacturile de tip SQL Injection Routed nu trebuie sa primeasca payload-uri false cum testam eu in request-urile pe care le trimiteam.
