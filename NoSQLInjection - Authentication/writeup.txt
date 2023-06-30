@@ -1,0 +1,14 @@
+Acesta este inca un challange mediu rezolvat pentru a acoperi lipsa unui challange hard. In acest challange m-am folosit de 2 lucru pentru a obtine flag-ul.
+Primul lucru e documentatia pusa la dispozitie pe https://repository.root-me.org/Exploitation%20-%20Web/EN%20-%20NoSQL,%20No%20injection%20-%20Ron,%20Shulman-Peleg,%20Bronshtein.pdf?_gl=1*15bapxl*_ga*MTA5MjgwNDgzMC4xNjg3ODczOTQ3*_ga_SRYSKX09J7*MTY4ODEwMzc5Mi4xMC4xLjE2ODgxMDcwNDguMC4wLjA.
+pentru a intelege cum functioneaza un atac de tip NoSQLInjection.
+Tot in acest repository am gasit si cateva payload-uri utile pe care le-am incercat, insa fara success.
+Al doilea lucru ar fi repository-ul https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/NoSQL%20Injection, repository pe care l-am mai folosit in alte challange-uri pentru SQLInjections.
+Am folosit payload-urile:
+username[$ne]=toto&password[$ne]=toto
+login[$regex]=a.*&pass[$ne]=lol
+login[$gt]=admin&login[$lt]=test&pass[$ne]=1
+login[$nin][]=admin&login[$nin][]=test&pass[$ne]=toto
+succesiv pana cand am reusit sa obtin ceva cu username[$ne]=toto&password[$ne]=toto, dar am modificat $ne in $gt si am obtinut un user numit "test"(am lasat un ss mai jos).
+In continuare dupa ce am incercat payload-ul login[$gt]=admin&login[$lt]=test&pass[$ne]=1 am obtinut flag-ul in clar.
+Pentru a modifica request-urile am folosit BurpSuite.
+Overall ideea atacului de tip NoSQLInjection nu mai este injectarea de cod sql clasic ca in bazele de date relationale, ci injectarea de cod NoSQL de tip JSON(de exemplu) pentru a trimite datele modificate pentru a obtinute rezultatul dorit, astfel exploatand baza de date nerelationala din spate folosind comenzi decizionale clasice($ne, $gt, $lt etc).
