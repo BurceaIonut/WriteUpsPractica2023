@@ -1,0 +1,6 @@
+Acesta este inca un challange mediu rezolvat pentru a acoperi lipsa unui challange hard.
+In total am rezolvat 3 challange-uri de nivel mediu(SQLInjection - Authentication, NoSQLInjection - Authentication si NoSQLInjection - Blind) pentru a incerca sa echivalez cu unul hard de care mai aveam nevoie.
+In acest challange am avut de a face tot cu NoSQLInjection, dar varianta blind, asa ca am decis sa incerc din nou payload-urile de pe https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/NoSQL%20Injection.
+Am incercat injectia cu login[$regex]=a.*&pass[$ne]=lol, dar transpus la ce aveam eu(chall_name=nosqlblind&flag[$regex]=^a*), dar a functionat doar partial, in raspuns primind decat confirmarea flag-ului, dar nu si acesta in clar. Am decis sa incerc sa brute force-ez fiecare caracter al flagului(nestiind dimensiunea acestuia am folosit . pentru a adauga un payload si a-l brute force-a) din regex utilizand un atac de tip Sniper pus la dispozitie in BurpSuite cu un charset constituit din alfabetul limbii engleze, toate cifrele si caractere speciale.
+Pentru a-mi da seama care caracter e bun in urma atacului am sortat request-urile dupa campul Length.
+Am reconstituit flag-ul caracter cu caracter si am obtinut rezultatul din poza atasata mai jos.
