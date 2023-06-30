@@ -1,0 +1,15 @@
+Aici era o pagina de cautare news si am incercat prima data niste sql injections clasice de tipul:
+ ' or "
+-- or # 
+' OR '1
+' OR 1 -- -
+" OR "" = "
+" OR 1 = 1 -- -
+' OR '' = '
+Nu au mers, asa ca am cautat mai departe si am gasit intr-un repository(https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/SQLite%20Injection.md) payload-uri utile pentru a injecta baza de date a acestui site.
+Am incercat prima data payload-ul SELECT sql FROM sqlite_schema pentru a verifica schema interna a bazei de date. Acest lucru nu a mers si am incercat alt payload.
+SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%' imi extrage din baza de date master structura bazei de date(tabelele). Mentionez ca nu pot extrage direct tbl_name si am avut nevoie sa afisez inaintea numelor tabelelor ceva, asa ca am ales o cifra la intamplare(de ex. 1) => 'UNION SELECT 1,tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%' --
+Folosesc UNION pentru a-mi extrage toate inregistrarile din baza de date master, indiferent daca acolo se afla valori nule(spre deosebire de UNION ALL).
+O sa las mai jos ss-uri care evidentiaza pe parcurs toate rezultatele obtinute.
+Pentru a determina structura tabelului users am folosit: 'UNION SELECT 1,sql FROM sqlite_master WHERE type!='meta' AND sql NOT NULL AND name ='users' -- 
+Am selectat in final din tabelul users username si password cu 'UNION SELECT username, password FROM users -- si am obtinut parola de la admin care reprezinta flag-ul.
