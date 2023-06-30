@@ -1,0 +1,5 @@
+Am folosit din nou payload-urile din repository-ul https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/SQLite%20Injection.md si am reusit sa obtin structura bazei de date din spatele site-ului prin injectarea payload-ului UNION SELECT 1,sql,1 FROM sqlite_master-- in URL.
+Am folosit mai multe combinatii de select pana am ajuns la cea buna pentru a-mi afisa cele 2 tabele(news si users).
+Am selectat apoi fiecare username si parola si parola din tabelul users si am incheiat challange-ul prin gasirea parolei de administrator.
+Pentru acest lucru am folosit payload-ul http://challenge01.root-me.org/web-serveur/ch18/?action=news&news_id=1%20UNION%20SELECT%201,username,password%20from%20users-- (cu 1 la select pentru a afisa si titlul paginii).
+Am atasat mai jos poze care evidentiaza rezultatele.
